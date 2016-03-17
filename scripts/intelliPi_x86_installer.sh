@@ -10,7 +10,7 @@
 PKGS_TO_CLONE=()
 
 PKGS_NONX86=("https://github.com/AtlantsEmbedded/nonatlants-wiringPi.git")
-PKGS_X86=("https://github.com/AtlantsEmbedded/x86-x64-stub-files.git")
+PKGS_X86=("https://github.com/AtlantsEmbedded/nonatlants-wiringPi-stub.git")
 
 PKGS_GENERIC=( 
 "https://github.com/AtlantsEmbedded/atlants-buzzer_lib.git"
@@ -21,6 +21,18 @@ PKGS_GENERIC=(
 "https://github.com/AtlantsEmbedded/atlants-DATA_preprocessing.git"
 "https://github.com/AtlantsEmbedded/atlants-DATA_interface.git"
 "https://github.com/AtlantsEmbedded/atlants-braintone_app.git"
+)
+
+
+PKGS_GENERIC_LOC_DIR=( 
+"atlants-buzzer_lib"
+"atlants-io_csv_lib"
+"atlants-lin_algebra_lib"
+"atlants-signal_proc_lib"
+"atlants-stats_lib"
+"atlants-DATA_preprocessing"
+"atlants-DATA_interface"
+"atlants-braintone_app"
 )
 
 PKGS_TO_GET=("git"
@@ -82,8 +94,11 @@ function build_misc_packages() {
 	tar -xzvf libezxml-0.8.6.tar.gz
 	`cd ezxml;make;make install`
 	
+	if [ -z $1 ]; then
+	`cd nonatlants-wiringPi-stub/;sudo make;sudo make install`
+	else
 	`cd nonatlants-wiringPi/;./build`
-	
+	fi
 }
 
 echo "-----------------------------------------------------------------------"
@@ -91,17 +106,6 @@ echo " IntelliPI installer script"
 echo "-----------------------------------------------------------------------"
 echo ""
 
-# Check for arguments
-if [ -z $1 ]; then
-	echo "No args given - assuming X86/64"
-	PKGS_TO_CLONE+=PKGS_X86
-	PKGS_TO_CLONE+=PKGS_GENERIC
-	
-else
-	echo "Arg1 found - assuming RASPBERRYPI"
-	PKGS_TO_CLONE+=PKGS_NONX86
-	PKGS_TO_CLONE+=PKGS_GENERIC
-fi
 
 # Verify system
 system_check
@@ -111,14 +115,28 @@ user_input
 # Install essential packages
 echo "Installing required packages "
 for i in ${PKGS_TO_GET[@]}; do
-        su -c "apt-get install -y ${i}"
+        sudo apt-get install -y ${i}
 done
 
 user_input
 
 # Clone packages
 echo "Cloning IntelliPi packages  "
-for i in ${PKGS_TO_CLONE[@]}; do
+
+# Check for arguments
+if [ -z $1 ]; then
+	echo "No args given - assuming X86/64"
+	for i in ${PKGS_X86[@]}; do
+        git clone ${i}
+	done
+else
+	echo "Arg1 found - assuming RASPBERRYPI"
+	for i in ${PKGS_NONX86[@]}; do
+        git clone ${i}
+	done
+fi
+
+for i in ${PKGS_GENERIC[@]}; do
         git clone ${i}
 done
 
@@ -131,7 +149,19 @@ user_input
 
 # Building packages
 echo "Building IntelliPi packages  "
-for i in ${PKGS_TO_CLONE[@]}; do
-        `cd ${1}; make; make install;`
-done
+# Check for arguments
+#if [ -z $1 ]; then
+#	echo "No args given - assuming X86/64"
+#	for i in ${PKGS_X86[@]}; do
+#       `cd ${i}; make; make install;`
+#	done
+#else
+#	echo "Arg1 found - assuming RASPBERRYPI"
+#	for i in ${PKGS_NONX86[@]}; do
+#        `cd ${i}; make; make install;`
+#	done
+#fi
 
+for i in ${PKGS_GENERIC_LOC_DIR[@]}; do
+        `cd ${i}; make; make install;`
+done
