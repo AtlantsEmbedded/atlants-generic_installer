@@ -45,6 +45,9 @@ PKGS_TO_GET=("git"
 "patch"
 "libglib2.0-dev"
 "libbluetooth-dev"
+"bluez"
+"bluez-utils"
+"bluez-tools"
 )
 
 IP_ADDR_DNS_SERVER="8.8.8.8"
@@ -73,22 +76,23 @@ function system_check() {
 		echo "Not running with an active sudo session"
 		echo "Enter password and press enter"
 		if sudo -Sv -p ''; then
-			echo "Authentication worked" 
+			echo "Auth ok"
+		fi
+		if [ $? -eq 0 ]; then
+			echo "Unable to create sudo session - quitting"
+			exit
 		else
 			echo "Sudo session now open"
-			exit
 		fi
 	fi
-	
-	
 	
 	# Check for essential packages (assuming Ubuntu)
 	DISTRO=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
 	
 	if [ "$DISTRO" == "Ubuntu" ]; then
-	  echo  "Assuming Ubuntu-based distribution"
+	  echo  "Assuming Ubuntu-based/Debian distribution"
 	else
-	  echo "Not Ubuntu-based, quitting"
+	  echo "Not Ubuntu-based/Debian, quitting"
 	  exit
 	fi
 	
