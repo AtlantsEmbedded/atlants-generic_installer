@@ -6,16 +6,15 @@
 # @purpose Create an installer which installs all of the libraries required
 # on an X86 or Raspi host other than that of which using the IntelliPi distro
 # ----------------------------------------------------------------------
+rm -rf atlants* nonatlants*
 
-PKGS_TO_CLONE=()
-
-PKGS_NONX86=("https://github.com/AtlantsEmbedded/nonatlants-wiringPi.git")
-PKGS_X86=("https://github.com/AtlantsEmbedded/nonatlants-wiringPi-stub.git")
+PKGS_NONX86=( "https://github.com/AtlantsEmbedded/nonatlants-wiringPi.git" )
+PKGS_X86=( "https://github.com/AtlantsEmbedded/nonatlants-wiringPi-stub.git" )
 
 PKGS_GENERIC=( 
+"https://github.com/AtlantsEmbedded/nonatlants-ezxml.git"
 "https://github.com/AtlantsEmbedded/atlants-buzzer_lib.git"
 "https://github.com/AtlantsEmbedded/atlants-io_csv_lib.git"
-"https://github.com/AtlantsEmbedded/atlants-lin_algebra_lib.git"
 "https://github.com/AtlantsEmbedded/atlants-signal_proc_lib.git"
 "https://github.com/AtlantsEmbedded/atlants-stats_lib.git"
 "https://github.com/AtlantsEmbedded/atlants-DATA_preprocessing.git"
@@ -27,7 +26,6 @@ PKGS_GENERIC=(
 PKGS_GENERIC_LOC_DIR=( 
 "atlants-buzzer_lib"
 "atlants-io_csv_lib"
-"atlants-lin_algebra_lib"
 "atlants-signal_proc_lib"
 "atlants-stats_lib"
 "atlants-DATA_preprocessing"
@@ -41,11 +39,11 @@ PKGS_TO_GET=("git"
 "grep"
 "automake"
 "autoconf"
-"libpthread"
 "gcc"
 "make"
 "patch"
 "libglib2.0-dev"
+"libbluetooth-dev"
 )
 
 IP_ADDR_DNS_SERVER="8.8.8.8"
@@ -54,14 +52,16 @@ IP_PORT_DNS="53"
 function user_input() {
 	USER_INPUT=""
 
-	read -n1 -p "# Continue? [y,n]" USER_INPUT 
+	echo -en '\E[00;31m' "# Continue? [y,n]" 
+	read USER_INPUT 
 	case $USER_INPUT in  
 		y|Y)  ;; 
 		n|N) exit ;; 
 		*) echo dont know ;; 
 	esac
 	
-	echo -n ""
+	tput sgr0
+	echo ""
 }
 
 function system_check() {
@@ -90,38 +90,40 @@ function system_check() {
 
 function build_misc_packages() {
 	
-	wget https://www.pacificsimplicity.ca/sites/default/files/uploads/libezxml-0.8.6.tar.gz
-	tar -xzvf libezxml-0.8.6.tar.gz
-	`cd ezxml;make;make install`
-	
 	if [ -z $1 ]; then
-	`cd nonatlants-wiringPi-stub/;sudo make;sudo make install`
+		( cd nonatlants-wiringPi-stub/ && make &&sudo make install)
 	else
-	`cd nonatlants-wiringPi/;./build`
+		(cd nonatlants-wiringPi/ && ./build )
 	fi
 }
 
-echo "-----------------------------------------------------------------------"
-echo " IntelliPI installer script"
-echo "-----------------------------------------------------------------------"
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+tput sgr0 
+echo -en '\E[00;32m' " IntelliPI installer script                                            \n"
+tput sgr0 
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+tput sgr0 
 echo ""
-
 
 # Verify system
 system_check
 
-user_input
-
 # Install essential packages
-echo "Installing required packages "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+echo -e '\E[00;32m' "Installing required packages "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+
+user_input
 for i in ${PKGS_TO_GET[@]}; do
-        sudo apt-get install -y ${i}
+	sudo apt-get install -y ${i}
 done
 
-user_input
-
 # Clone packages
-echo "Cloning IntelliPi packages  "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+echo -e '\E[00;32m' "Cloning IntelliPi packages  "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+
+user_input
 
 # Check for arguments
 if [ -z $1 ]; then
@@ -140,28 +142,25 @@ for i in ${PKGS_GENERIC[@]}; do
         git clone ${i}
 done
 
-user_input
 
 # Build misc packages
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+echo -e '\E[00;32m' "Building misc packages  "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+tput sgr0 
+user_input
 build_misc_packages
 
-user_input
 
 # Building packages
-echo "Building IntelliPi packages  "
-# Check for arguments
-#if [ -z $1 ]; then
-#	echo "No args given - assuming X86/64"
-#	for i in ${PKGS_X86[@]}; do
-#       `cd ${i}; make; make install;`
-#	done
-#else
-#	echo "Arg1 found - assuming RASPBERRYPI"
-#	for i in ${PKGS_NONX86[@]}; do
-#        `cd ${i}; make; make install;`
-#	done
-#fi
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+echo -e '\E[00;32m' "Building IntelliPi packages  "
+echo -en '\E[00;32m' "-----------------------------------------------------------------------\n"
+tput sgr0 
 
+user_input
 for i in ${PKGS_GENERIC_LOC_DIR[@]}; do
-        `cd ${i}; make; make install;`
+	echo -e '\E[00;32m' "Building $i"
+	tput sgr0
+	( cd $i && make && sudo make install;)
 done
