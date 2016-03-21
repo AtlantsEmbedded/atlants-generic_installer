@@ -24,6 +24,7 @@ PKGS_GENERIC=(
 
 
 PKGS_GENERIC_LOC_DIR=( 
+"nonatlans-ezxml"
 "atlants-buzzer_lib"
 "atlants-io_csv_lib"
 "atlants-signal_proc_lib"
@@ -65,6 +66,22 @@ function user_input() {
 }
 
 function system_check() {
+	
+	if sudo -n true 2>/dev/null; then 
+		echo "Running and active sudo session - continue"
+	else
+		echo "Not running with an active sudo session"
+		echo "Enter password and press enter"
+		if sudo -Sv -p ''; then
+			echo "Authentication worked" 
+		else
+			echo "Sudo session now open"
+			exit
+		fi
+	fi
+	
+	
+	
 	# Check for essential packages (assuming Ubuntu)
 	DISTRO=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
 	
@@ -91,7 +108,7 @@ function system_check() {
 function build_misc_packages() {
 	
 	if [ -z $1 ]; then
-		( cd nonatlants-wiringPi-stub/ && make &&sudo make install)
+		( cd nonatlants-wiringPi-stub/ && make && sudo make install)
 	else
 		(cd nonatlants-wiringPi/ && ./build )
 	fi
