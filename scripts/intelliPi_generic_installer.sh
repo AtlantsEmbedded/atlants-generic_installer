@@ -90,7 +90,9 @@ function system_check() {
 	DISTRO=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
 	
 	if [ "$DISTRO" == "Ubuntu" ]; then
-	  echo  "Assuming Ubuntu-based/Debian distribution"
+	  echo  "Assuming Ubuntu-based distribution"
+	elif [ "$DISTRO" == "Debian" ]; then
+	echo  "Assuming Debian-based distribution"
 	else
 	  echo "Not Ubuntu-based/Debian, quitting"
 	  exit
