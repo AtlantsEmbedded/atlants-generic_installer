@@ -24,7 +24,7 @@ PKGS_GENERIC=(
 
 
 PKGS_GENERIC_LOC_DIR=( 
-"nonatlans-ezxml"
+"nonatlants-ezxml"
 "atlants-buzzer_lib"
 "atlants-io_csv_lib"
 "atlants-signal_proc_lib"
