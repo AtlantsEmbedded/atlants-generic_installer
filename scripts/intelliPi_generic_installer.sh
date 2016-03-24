@@ -34,6 +34,9 @@ PKGS_GENERIC_LOC_DIR=(
 "atlants-braintone_app"
 )
 
+BRAINTONE_SCRIPTS_SRC="atlants-braintone_app/scripts/launch_braintone_x86.sh"
+BRAINTONE_SCRIPTS_DEST="launch_braintone_x86.sh"
+
 PKGS_TO_GET=("git"
 "build-essential"
 "binutils"
@@ -187,3 +190,5 @@ for i in ${PKGS_GENERIC_LOC_DIR[@]}; do
 	tput sgr0
 	( cd $i && make && sudo make install;)
 done
+
+cp $BRAINTONE_SCRIPTS_SRC $BRAINTONE_SCRIPTS_DEST 
