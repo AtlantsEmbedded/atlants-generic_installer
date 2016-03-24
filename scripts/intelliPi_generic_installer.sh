@@ -78,10 +78,9 @@ function system_check() {
 	else
 		echo "Not running with an active sudo session"
 		echo "Enter password and press enter"
-		if sudo -Sv -p ''; then
-			echo "Auth ok"
-		fi
-		if [ $? -eq 0 ]; then
+		sudo -Sv -p ''
+		echo $?
+		if [ $? -eq 1 ]; then
 			echo "Unable to create sudo session - quitting"
 			exit
 		else
