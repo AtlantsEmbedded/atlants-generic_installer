@@ -56,6 +56,18 @@ PKGS_TO_GET=("git"
 IP_ADDR_DNS_SERVER="8.8.8.8"
 IP_PORT_DNS="53"
 
+function am_I_root_or_sudo() {
+	MY_USER=`whoami`
+	
+	if [ "$MY_USER" == "root" ]; then
+		echo -e '\E[00;31m' "Please re-run the script not as a sudo or root user" 
+		exit
+	else
+		echo "Script executing as $MY_USER" 
+	fi
+	
+}
+
 function user_input() {
 	USER_INPUT=""
 
@@ -79,9 +91,8 @@ function system_check() {
 		echo "Not running with an active sudo session"
 		echo "Enter password and press enter"
 		sudo -Sv -p ''
-		echo $?
 		if [ $? -eq 1 ]; then
-			echo "Unable to create sudo session - quitting"
+			echo -e '\E[00;31m' "Unable to create sudo session - quitting"
 			exit
 		else
 			echo "Sudo session now open"
@@ -131,6 +142,7 @@ tput sgr0
 echo ""
 
 # Verify system
+am_I_root_or_sudo
 system_check
 
 # Install essential packages
