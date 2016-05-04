@@ -20,6 +20,7 @@ PKGS_GENERIC=(
 "https://github.com/AtlantsEmbedded/atlants-DATA_preprocessing.git"
 "https://github.com/AtlantsEmbedded/atlants-DATA_interface.git"
 "https://github.com/AtlantsEmbedded/atlants-braintone_app.git"
+"https://github.com/AtlantsEmbedded/atlants-cerebral_wars.git"
 )
 
 
@@ -36,6 +37,8 @@ PKGS_GENERIC_LOC_DIR=(
 
 BRAINTONE_SCRIPTS_SRC="atlants-braintone_app/scripts/launch_braintone_x86.sh"
 BRAINTONE_SCRIPTS_DEST="launch_braintone_x86.sh"
+CEREBRAL_WARS_SCRIPTS_SRC="atlants-cerebral_wars/scripts/launch_cerebral_wars_x86.sh"
+CEREBRAL_WARS_SCRIPTS_DEST="launch_cerebral_wars_x86.sh"
 
 PKGS_TO_GET=("git"
 "build-essential"
@@ -203,3 +206,4 @@ for i in ${PKGS_GENERIC_LOC_DIR[@]}; do
 done
 
 cp $BRAINTONE_SCRIPTS_SRC $BRAINTONE_SCRIPTS_DEST 
+cp $CEREBRAL_WARS_SCRIPTS_SRC $CEREBRAL_WARS_SCRIPTS_DEST 
