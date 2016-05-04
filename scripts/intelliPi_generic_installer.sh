@@ -33,6 +33,7 @@ PKGS_GENERIC_LOC_DIR=(
 "atlants-DATA_preprocessing"
 "atlants-DATA_interface"
 "atlants-braintone_app"
+"atlants-cerebral_wars"
 )
 
 BRAINTONE_SCRIPTS_SRC="atlants-braintone_app/scripts/launch_braintone_x86.sh"
